@@ -1,117 +1,94 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { addContact } from "../services/contactsApi.js";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export const AddContact = () => {
-    const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const editId = searchParams.get("id");
+    const { dispatch } = useGlobalReducer();
 
     const [form, setForm] = useState({
-        fullName: "",
+        full_name: "",
         email: "",
         phone: "",
         address: "",
     });
 
-    useEffect(() => {
-        if (editId) {
-            const contact = store.contacts.find((c) => c.id === editId);
-            if (contact) {
-                setForm({
-                    fullName: contact.fullName,
-                    email: contact.email,
-                    phone: contact.phone,
-                    address: contact.address,
-                });
-            }
+    const contactFormHandle = async (e) => {
+        e.preventDefault();
+        try {
+            const created = await addContact(form);
+            dispatch({ type: "storeContact", payload: { contact: created } });
+            navigate("/");
+        } catch (err) {
+            console.error("Error creando contacto:", err);
+            alert("No se pudo crear el contacto");
         }
-    }, [editId, store.contacts]);
-
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSave = (e) => {
-        e.preventDefault();
-        if (editId) {
-            dispatch({ type: "update_contact", payload: { id: editId, data: form } });
-        } else {
-            dispatch({ type: "add_contact", payload: form });
-        }
-        navigate("/");
+    const onChange = (e) => {
+        setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
     };
 
     return (
         <div className="container py-5">
-            <h1 className="display-6 text-center mb-4">
-                {editId ? "Edit contact" : "Add a new contact"}
-            </h1>
+            <h1 className="display-6 text-center mb-4">Add a new contact</h1>
             <div className="row justify-content-center">
                 <div className="col-12 col-md-10 col-lg-8">
-                    <form className="card p-4" onSubmit={handleSave}>
+                    <form className="card p-4" onSubmit={contactFormHandle}>
                         <div className="mb-3">
-                            <label className="form-label">
-                                <i className="fas fa-user me-2"></i>Full Name
-                            </label>
+                            <label className="form-label">Full Name</label>
                             <input
+                                name="full_name"
                                 type="text"
-                                name="fullName"
-                                value={form.fullName}
-                                onChange={handleChange}
                                 className="form-control"
                                 placeholder="Full Name"
+                                value={form.full_name}
+                                onChange={onChange}
                                 required
                             />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">
-                                <i className="fas fa-envelope me-2"></i>Email
-                            </label>
+                            <label className="form-label">Email</label>
                             <input
-                                type="email"
                                 name="email"
-                                value={form.email}
-                                onChange={handleChange}
+                                type="email"
                                 className="form-control"
                                 placeholder="Enter email"
+                                value={form.email}
+                                onChange={onChange}
                                 required
                             />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">
-                                <i className="fas fa-phone me-2"></i>Phone
-                            </label>
+                            <label className="form-label">Phone</label>
                             <input
-                                type="text"
                                 name="phone"
-                                value={form.phone}
-                                onChange={handleChange}
+                                type="text"
                                 className="form-control"
                                 placeholder="Enter phone"
+                                value={form.phone}
+                                onChange={onChange}
                                 required
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="form-label">
-                                <i className="fas fa-map-marker-alt me-2"></i>Address
-                            </label>
+                            <label className="form-label">Address</label>
                             <input
-                                type="text"
                                 name="address"
-                                value={form.address}
-                                onChange={handleChange}
+                                type="text"
                                 className="form-control"
                                 placeholder="Enter address"
+                                value={form.address}
+                                onChange={onChange}
                                 required
                             />
                         </div>
                         <button type="submit" className="btn btn-primary w-100 mb-2">
-                            <i className="fas fa-save me-2"></i>Save
+                            save
                         </button>
                         <Link to="/" className="text-decoration-underline">
-                            <i className="fas fa-arrow-left me-2"></i>Back to contacts
+                            or get back to contacts
                         </Link>
                     </form>
                 </div>
