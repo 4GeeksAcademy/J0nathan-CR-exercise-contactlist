@@ -1,46 +1,52 @@
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { deleteContact } from "../services/contactsApi.js";
 
-export default function DeleteModal() {
-    const { store, dispatch } = useGlobalReducer();
-    const { isOpen, contactId, contactName } = store.deleteModal;
+const DeleteModal = (props) => {
 
-    if (!isOpen) return null;
-
-    async function confirmDeleteContact() {
-        try {
-            await deleteContact(contactId);
-            dispatch({ type: 'storeDeleteContact', payload: { id: contactId } });
-        } catch (err) {
-            console.error(err);
-            alert("Error eliminando el contacto");
-        } finally {
-            dispatch({ type: 'closeDeleteModal' });
-        }
-    }
+    const attribute = props.show ? {'modal-area':'true', role:'dialog'} : {'area-hidden':'true'};
 
     return (
-        <div className="modal show d-block" tabIndex="-1" role="dialog" aria-modal="true">
+        <div
+            className={`modal fade ${props.show ? 'show d-block' : 'd-none'}`}
+            id="exampleModal"
+            tabIndex={-1}
+            aria-labelledby="exampleModalLabel"
+            {...attribute}
+        >
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title"><i className="fa-solid fa-triangle-exclamation me-2"></i>Confirmar</h5>
-                        <button type="button" className="btn-close" onClick={() => dispatch({ type: 'closeDeleteModal' })}></button>
+                        <h1 className="modal-title fs-5" id="exampleModalLabel">
+                            Delete Contact
+                        </h1>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            onClick={props.onCancel}
+                        />
                     </div>
                     <div className="modal-body">
-                        <p>¿Seguro que deseas eliminar a <strong>{contactName}</strong>?</p>
+                        Are you sure you want to delete the contact?
                     </div>
                     <div className="modal-footer">
-                        <button className="btn btn-secondary" onClick={() => dispatch({ type: 'closeDeleteModal' })}>
-                            Cancelar
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                            onClick={props.onCancel}
+                        >
+                            Close
                         </button>
-                        <button className="btn btn-danger" onClick={confirmDeleteContact}>
-                            <i className="fa-solid fa-trash me-2"></i>Eliminar
+                        <button type="button" className="btn btn-primary" onClick={props.onDelete}>
+                            Save changes
                         </button>
                     </div>
                 </div>
             </div>
-            <div className="modal-backdrop show"></div>
         </div>
-    );
+
+
+    )
 }
+
+export default DeleteModal
