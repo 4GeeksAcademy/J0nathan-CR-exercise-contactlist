@@ -6,7 +6,7 @@ export const Navbar = () => {
 		<nav className="navbar">
 			<div className="container justify-content-end">
 				<div className="">
-					<Link to="/new-contact">
+					<Link to="/add-contact">
 						<button className="btn btn-success">Add new contact</button>
 					</Link>
 				</div>

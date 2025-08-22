@@ -38,7 +38,7 @@ const FormContact = (props) => {
             console.log('Guardado en API:', dataJson);
             navigate('/');
         } catch (e) {
-            console.error('Error al guardar contacto:', e);
+            console.log('Error al guardar contacto:', e);
         }
     };
 

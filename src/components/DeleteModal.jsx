@@ -26,7 +26,7 @@ const DeleteModal = (props) => {
                         />
                     </div>
                     <div className="modal-body">
-                        Are you sure you want to delete the contact?
+                        Do you want to delete the Contact?
                     </div>
                     <div className="modal-footer">
                         <button
@@ -37,8 +37,8 @@ const DeleteModal = (props) => {
                         >
                             Close
                         </button>
-                        <button type="button" className="btn btn-primary" onClick={props.onDelete}>
-                            Save changes
+                        <button type="button" className="btn btn-danger" onClick={props.onDelete}>
+                            Delete
                         </button>
                     </div>
                 </div>
